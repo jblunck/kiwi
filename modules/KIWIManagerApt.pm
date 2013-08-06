@@ -237,8 +237,8 @@ sub setupInstallationSource {
 		if (! $comp) {
 			$comp = 'main';
 		}
-		$mainDist = $dist;
 		if ($alias eq "system") {
+			$mainDist = $dist;
 			$mainPath = $path;
 		}
 		if ($chroot) {
