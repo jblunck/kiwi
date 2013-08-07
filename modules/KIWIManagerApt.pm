@@ -234,9 +234,6 @@ sub setupInstallationSource {
 			$kiwi -> failed (); 
 			return;
 		}
-		if (! $comp) {
-			$comp = 'main';
-		}
 		if ($alias eq "system") {
 			$mainDist = $dist;
 			$mainPath = $path;
