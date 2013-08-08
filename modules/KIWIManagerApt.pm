@@ -621,7 +621,10 @@ sub setupRootSystem {
 		print $fd "while kill -0 \$SPID &>/dev/null; do sleep 1;done\n";
 		print $fd "echo 1 > $screenCall.exit; exit 1; }\n";
 		print $fd "trap clean INT TERM\n";
-		print $fd "debootstrap $mainDist $root $mainPath &\n";
+		print $fd "debootstrap --foreign $mainDist $root $mainPath &\n";
+		print $fd "SPID=\$!;wait \$SPID\n";
+		print $fd "test \$? = 0 && ";
+		print $fd "@kchroot /debootstrap/debootstrap --second-stage &\n";
 		print $fd "SPID=\$!;wait \$SPID\n";
 		print $fd "ECODE=\$?\n";
 		print $fd "echo \$ECODE > $screenCall.exit\n";
