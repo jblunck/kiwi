@@ -721,12 +721,15 @@ sub createAptConfig {
 	print $fd '{'."\n";
 	print $fd "\t".'Get'."\n";
 	print $fd "\t".'{'."\n";
+	print $fd "\t\t".'AllowUnauthenticated "true";'."\n";
 	print $fd "\t\t".'Assume-Yes "true";'."\n";
+	print $fd "\t\t".'Install-Recommends "false";'."\n";
+	print $fd "\t\t".'Install-Suggests "false";'."\n";
 	print $fd "\t".'}'."\n";
 	print $fd '};'."\n";
 	print $fd 'DPkg'."\n";
 	print $fd '{'."\n";
-	print $fd "\t".'Options {"--force-all";}'."\n";
+	print $fd "\t".'Options {"--force-depends";}'."\n";
 	print $fd '};'."\n";
 	$fd -> close();
 	return $config;
