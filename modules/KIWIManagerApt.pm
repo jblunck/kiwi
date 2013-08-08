@@ -75,10 +75,15 @@ sub new {
 	# Store apt-get command parameters
 	#------------------------------------------
 	$this->{apt} = [
+		"DEBIAN_FRONTEND=noninteractive",
+		"DEBCONF_NONINTERACTIVE_SEEN=true",
 		$locator -> getExecPath('apt-get'),
 		"-c $dataDir/apt.conf"
 	];
 	$this->{apt_chroot} = [
+		"/usr/bin/env",
+		"DEBIAN_FRONTEND=noninteractive",
+		"DEBCONF_NONINTERACTIVE_SEEN=true",
 		"apt-get",
 		"-c $dataDir/apt.conf"
 	];
@@ -380,7 +385,7 @@ sub installPackages {
 	print $fd "while kill -0 \$SPID &>/dev/null; do sleep 1;done\n";
 	print $fd "echo 1 > $screenCall.exit; exit 1; }\n";
 	print $fd "trap clean INT TERM\n";
-	print $fd "@kchroot @apt install @addonPackages &\n";
+	print $fd "yes '' | @kchroot @apt install @addonPackages &\n";
 	print $fd "SPID=\$!;wait \$SPID\n";
 	print $fd "ECODE=\$?\n";
 	print $fd "echo \$ECODE > $screenCall.exit\n";
@@ -529,7 +534,7 @@ sub setupUpgrade {
 			# TODO: how to handle selections
 		}
 		if (@addonPackages) {
-			print $fd "@kchroot @apt install @addonPackages &\n";
+			print $fd "yes '' | @kchroot @apt install @addonPackages &\n";
 			print $fd "SPID=\$!;wait \$SPID\n";
 		}
 	}
@@ -626,7 +631,7 @@ sub setupRootSystem {
 			if (@newpatts) {
 				print $fd "test \$? = 0 && ";
 			}
-			print $fd "@kchroot @apt install @install &\n";
+			print $fd "yes '' | @kchroot @apt install @install &\n";
 			print $fd "SPID=\$!;wait \$SPID\n";
 		}
 		print $fd "ECODE=\$?\n";
