@@ -76,13 +76,11 @@ sub new {
 	#------------------------------------------
 	$this->{apt} = [
 		$locator -> getExecPath('apt-get'),
-		"-c $dataDir/apt.conf",
-		"-y"
+		"-c $dataDir/apt.conf"
 	];
 	$this->{apt_chroot} = [
 		"apt-get",
-		"-c $dataDir/apt.conf",
-		"-y"
+		"-c $dataDir/apt.conf"
 	];
 	#==========================================
 	# Create apt config file
@@ -723,7 +721,7 @@ sub createAptConfig {
 	print $fd '{'."\n";
 	print $fd "\t".'Get'."\n";
 	print $fd "\t".'{'."\n";
-	print $fd "\t\t".'Force-Yes "true";'."\n";
+	print $fd "\t\t".'Assume-Yes "true";'."\n";
 	print $fd "\t".'}'."\n";
 	print $fd '};'."\n";
 	print $fd 'DPkg'."\n";
