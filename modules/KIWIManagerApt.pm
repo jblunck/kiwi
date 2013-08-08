@@ -454,7 +454,7 @@ sub removePackages {
 	print $fd "EOF\n";
 	print $fd "chmod 755 $root/sbin/start-stop-daemon\n";
 	print $fd "@kchroot mount -t proc proc /proc"."\n";
-	print $fd "@kchroot @apt remove @removePackages &\n";
+	print $fd "@kchroot @apt remove --purge @removePackages &\n";
 	print $fd "SPID=\$!;wait \$SPID\n";
 	print $fd "ECODE=\$?\n";
 	print $fd "echo \$ECODE > $screenCall.exit\n";
@@ -528,7 +528,7 @@ sub setupUpgrade {
 	if (defined $delPacks) {
 		my @removePackages = @{$delPacks};
 		if (@removePackages) {
-			print $fd "@kchroot @apt remove @removePackages &\n";
+			print $fd "@kchroot @apt remove --purge @removePackages &\n";
 			print $fd "SPID=\$!;wait \$SPID\n";
 			print $fd "test \$? = 0 && ";
 		}
