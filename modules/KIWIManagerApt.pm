@@ -385,10 +385,19 @@ sub installPackages {
 	print $fd "while kill -0 \$SPID &>/dev/null; do sleep 1;done\n";
 	print $fd "echo 1 > $screenCall.exit; exit 1; }\n";
 	print $fd "trap clean INT TERM\n";
+	# some debian packages do start their daemon during post-install
+	print $fd "@kchroot dpkg-divert --rename --quiet --add /sbin/start-stop-daemon\n";
+	print $fd "cat > $root/sbin/start-stop-daemon << EOF\n";
+	print $fd "#!/bin/sh\n";
+	print $fd "exit 0\n";
+	print $fd "EOF\n";
+	print $fd "chmod 755 $root/sbin/start-stop-daemon\n";
 	print $fd "yes '' | @kchroot @apt install @addonPackages &\n";
 	print $fd "SPID=\$!;wait \$SPID\n";
 	print $fd "ECODE=\$?\n";
 	print $fd "echo \$ECODE > $screenCall.exit\n";
+	print $fd "rm -f $root/sbin/start-stop-daemon\n";
+	print $fd "@kchroot dpkg-divert --rename --quiet --remove /sbin/start-stop-daemon\n";
 	print $fd "exit \$ECODE\n";
 	$fd -> close();
 	return $this -> setupScreenCall();
@@ -437,6 +446,13 @@ sub removePackages {
 	print $fd "while kill -0 \$SPID &>/dev/null; do sleep 1;done\n";
 	print $fd "echo 1 > $screenCall.exit; exit 1; }\n";
 	print $fd "trap clean INT TERM\n";
+	# some debian packages do start their daemon during post-install
+	print $fd "@kchroot dpkg-divert --rename --quiet --add /sbin/start-stop-daemon\n";
+	print $fd "cat > $root/sbin/start-stop-daemon << EOF\n";
+	print $fd "#!/bin/sh\n";
+	print $fd "exit 0\n";
+	print $fd "EOF\n";
+	print $fd "chmod 755 $root/sbin/start-stop-daemon\n";
 	print $fd "@kchroot mount -t proc proc /proc"."\n";
 	print $fd "@kchroot @apt remove @removePackages &\n";
 	print $fd "SPID=\$!;wait \$SPID\n";
@@ -444,6 +460,8 @@ sub removePackages {
 	print $fd "echo \$ECODE > $screenCall.exit\n";
 	print $fd "@kchroot umount /proc"."\n";
 	#print $fd "@kchroot /bin/bash\n";
+	print $fd "rm -f $root/sbin/start-stop-daemon\n";
+	print $fd "@kchroot dpkg-divert --rename --quiet --remove /sbin/start-stop-daemon\n";
 	print $fd "exit \$ECODE\n";
 	$fd -> close();
 	return $this -> setupScreenCall();
@@ -497,6 +515,13 @@ sub setupUpgrade {
 	print $fd "while kill -0 \$SPID &>/dev/null; do sleep 1;done\n";
 	print $fd "echo 1 > $screenCall.exit; exit 1; }\n";
 	print $fd "trap clean INT TERM\n";
+	# some debian packages do start their daemon during post-install
+	print $fd "@kchroot dpkg-divert --rename --quiet --add /sbin/start-stop-daemon\n";
+	print $fd "cat > $root/sbin/start-stop-daemon << EOF\n";
+	print $fd "#!/bin/sh\n";
+	print $fd "exit 0\n";
+	print $fd "EOF\n";
+	print $fd "chmod 755 $root/sbin/start-stop-daemon\n";
 	#==========================================
 	# Handle remove request
 	#------------------------------------------
@@ -540,6 +565,8 @@ sub setupUpgrade {
 	}
 	print $fd "ECODE=\$?\n";
 	print $fd "echo \$ECODE > $screenCall.exit\n";
+	print $fd "rm -f $root/sbin/start-stop-daemon\n";
+	print $fd "@kchroot dpkg-divert --rename --quiet --remove /sbin/start-stop-daemon\n";
 	print $fd "exit \$ECODE\n";
 	$fd -> close();
 	#==========================================
@@ -624,6 +651,13 @@ sub setupRootSystem {
 		print $fd "while kill -0 \$SPID &>/dev/null; do sleep 1;done\n";
 		print $fd "echo 1 > $screenCall.exit; exit 1; }\n";
 		print $fd "trap clean INT TERM\n";
+		# some debian packages do start their daemon during post-install
+		print $fd "@kchroot dpkg-divert --rename --quiet --add /sbin/start-stop-daemon\n";
+		print $fd "cat > $root/sbin/start-stop-daemon << EOF\n";
+		print $fd "#!/bin/sh\n";
+		print $fd "exit 0\n";
+		print $fd "EOF\n";
+		print $fd "chmod 755 $root/sbin/start-stop-daemon\n";
 		if (@newpatts) {
 			# TODO: how to handle selections
 		}
@@ -636,6 +670,8 @@ sub setupRootSystem {
 		}
 		print $fd "ECODE=\$?\n";
 		print $fd "echo \$ECODE > $screenCall.exit\n";
+		print $fd "rm -f $root/sbin/start-stop-daemon\n";
+		print $fd "@kchroot dpkg-divert --rename --quiet --remove /sbin/start-stop-daemon\n";
 		print $fd "exit \$ECODE\n";
 	}
 	$fd -> close();
