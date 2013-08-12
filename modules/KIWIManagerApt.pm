@@ -47,7 +47,7 @@ sub new {
 	# Object setup
 	#------------------------------------------
 	my $class = shift;
-    my $this  = $class->SUPER::new(@_);
+	my $this  = $class->SUPER::new(@_);
 	#==========================================
 	# Retrieve data from base class
 	#------------------------------------------
@@ -777,6 +777,15 @@ sub createAptConfig {
 	print $fd '};'."\n";
 	$fd -> close();
 	return $config;
+}
+
+sub setupPackageKeys {
+	# ...
+	# Import package keys for Release file signature verification is done
+	# by the debootstrap command.
+	# ---
+	my $this = shift;
+	return $this;
 }
 
 1;
